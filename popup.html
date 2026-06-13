@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Still Becoming™</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1612;
+      --parchment: #faf7f2;
+      --warm-white: #f5f1ea;
+      --gold: #c9a96e;
+      --gold-light: #e8d5b0;
+      --gold-faint: #f7f0e3;
+      --muted: #8a7d6e;
+      --seal: #7c3d3d;
+      --seal-light: #c4706e;
+      --open: #3d6b5a;
+      --open-light: #6aad92;
+      --border: #e4ddd3;
+      --shadow: rgba(26,22,18,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 400px;
+      min-height: 560px;
+      background: var(--parchment);
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--ink);
+      padding: 18px 20px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .brand {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .brand-seal {
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      color: var(--gold);
+      letter-spacing: 0;
+      flex-shrink: 0;
+    }
+    .brand-text h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--warm-white);
+      line-height: 1;
+    }
+    .brand-text h1 span { color: var(--gold); }
+    .brand-tagline {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: var(--ink);
+      padding: 0 20px;
+      gap: 0;
+      border-bottom: 1px solid #2e2a26;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 4px 8px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--gold-light); }
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── VIEWS ── */
+    .view { display: none; padding: 18px 20px; }
+    .view.active { display: block; }
+
+    /* ── VAULT VIEW ── */
+    .vault-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .stat-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .stat-card .label {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .letter-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .letter-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .letter-card:hover {
+      border-color: var(--gold-light);
+      box-shadow: 0 2px 12px var(--shadow);
+      transform: translateY(-1px);
+    }
+    .letter-card.sealed::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--seal-light);
+      border-radius: 10px 0 0 10px;
+    }
+    .letter-card.unlocked::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--open-light);
+      border-radius: 10px 0 0 10px;
+    }
+    .letter-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+    .letter-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      flex: 1;
+      margin-right: 8px;
+    }
+    .letter-badge {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .badge-sealed {
+      background: #fdf0f0;
+      color: var(--seal);
+      border: 1px solid #f0cece;
+    }
+    .badge-unlocked {
+      background: #eef7f3;
+      color: var(--open);
+      border: 1px solid #c3e5d8;
+    }
+    .letter-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .letter-meta span { margin-right: 10px; }
+    .countdown {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .empty-vault {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--muted);
+    }
+    .empty-vault .icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+    .empty-vault p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    .empty-vault small { font-size: 11px; }
+
+    /* ── WRITE VIEW ── */
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .date-presets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .preset-btn {
+      padding: 5px 10px;
+      background: var(--gold-faint);
+      border: 1px solid var(--gold-light);
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      background: var(--gold-light);
+    }
+
+    .word-count {
+      text-align: right;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--ink);
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+    .btn-primary:hover {
+      background: #2a2520;
+      box-shadow: 0 4px 16px rgba(201,169,110,0.2);
+    }
+
+    /* ── READ VIEW ── */
+    .letter-reader {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .reader-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .reader-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .reader-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .reader-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--ink);
+      white-space: pre-wrap;
+    }
+    .reader-locked {
+      text-align: center;
+      padding: 30px 10px;
+    }
+    .reader-locked .lock-icon { font-size: 40px; margin-bottom: 12px; }
+    .reader-locked h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+    .reader-locked p { font-size: 12px; color: var(--muted); }
+    .reader-locked .unlock-date {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 16px;
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      color: var(--gold);
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .back-btn:hover { color: var(--ink); }
+
+    /* ── PROMPTS VIEW ── */
+    .prompt-card {
+      background: linear-gradient(135deg, var(--ink) 0%, #2a2520 100%);
+      border-radius: 12px;
+      padding: 22px 20px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .prompt-card::after {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      right: 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 120px;
+      color: rgba(201,169,110,0.1);
+      line-height: 1;
+    }
+    .prompt-label {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .prompt-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--warm-white);
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+    .prompt-action {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-ghost {
+      background: none;
+      border: 1px solid rgba(201,169,110,0.4);
+      color: var(--gold);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.06em;
+    }
+    .btn-ghost:hover {
+      background: rgba(201,169,110,0.1);
+      border-color: var(--gold);
+    }
+
+    .prompts-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mini-prompt {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mini-prompt:hover {
+      border-color: var(--gold-light);
+      background: var(--gold-faint);
+    }
+    .mini-prompt-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--ink);
+      flex: 1;
+      line-height: 1.3;
+    }
+    .mini-prompt-arrow { color: var(--gold); font-size: 14px; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 16px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--ink);
+      color: var(--gold-light);
+      padding: 9px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14px;
+      border: 1px solid rgba(201,169,110,0.3);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="brand">
+      <div class="brand-seal">SB</div>
+      <div class="brand-text">
+        <h1>Still Becoming<span>™</span></h1>
+        <div class="brand-tagline">Digital Letter Vault</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="vault">Vault</button>
+    <button class="tab-btn" data-tab="write">Write</button>
+    <button class="tab-btn" data-tab="prompts">Prompts</button>
+  </div>
+
+  <!-- VAULT -->
+  <div class="view active" id="view-vault">
+    <div class="vault-summary">
+      <div class="stat-card">
+        <div class="num" id="stat-total">0</div>
+        <div class="label">Letters</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-sealed">0</div>
+        <div class="label">Sealed</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-open">0</div>
+        <div class="label">Opened</div>
+      </div>
+    </div>
+    <div class="section-label">Your Letters</div>
+    <div class="letter-list" id="letter-list"></div>
+  </div>
+
+  <!-- WRITE -->
+  <div class="view" id="view-write">
+    <div class="form-group">
+      <label class="form-label">Letter Title</label>
+      <input class="form-input" id="input-title" placeholder="A letter to future me…" maxlength="80"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">To</label>
+      <select class="form-select" id="input-recipient">
+        <option value="Future Self">Future Self</option>
+        <option value="Future Partner">Future Partner</option>
+        <option value="Future Child">Future Child</option>
+        <option value="Future Business Self">Future Business Self</option>
+        <option value="Future Student Self">Future Student Self</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Open on</label>
+      <div class="date-presets">
+        <button class="preset-btn" data-days="30">30 days</button>
+        <button class="preset-btn" data-days="90">3 months</button>
+        <button class="preset-btn" data-days="180">6 months</button>
+        <button class="preset-btn" data-days="365">1 year</button>
+        <button class="preset-btn" data-days="1825">5 years</button>
+      </div>
+      <input class="form-input" type="date" id="input-date"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Letter</label>
+      <textarea class="form-textarea" id="input-body" placeholder="Dear future me,&#10;&#10;As I write this, I am…"></textarea>
+      <div class="word-count"><span id="word-count">0</span> words</div>
+    </div>
+    <button class="btn-primary" id="btn-seal">Seal & Vault This Letter ✦</button>
+  </div>
+
+  <!-- PROMPTS -->
+  <div class="view" id="view-prompts">
+    <div class="prompt-card">
+      <div class="prompt-label">Today's Reflection</div>
+      <div class="prompt-text" id="daily-prompt">Loading…</div>
+      <div class="prompt-action">
+        <button class="btn-ghost" id="btn-write-prompt">Write to this prompt →</button>
+      </div>
+    </div>
+    <div class="section-label">More Prompts</div>
+    <div class="prompts-grid" id="prompts-grid"></div>
+  </div>
+
+  <!-- READER (hidden) -->
+  <div class="view" id="view-reader">
+    <button class="back-btn" id="btn-back">← Back to Vault</button>
+    <div class="letter-reader" id="reader-content"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
